@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X Ghost Settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="xg-settings">
+    <header class="xg-header">
+      <h1>&#x1F47B; X Ghost</h1>
+      <p class="xg-subtitle">AI-powered reply generator for X</p>
+    </header>
+
+    <section class="xg-section">
+      <h2>API Configuration</h2>
+
+      <label class="xg-label" for="provider">Provider</label>
+      <select id="provider" class="xg-select">
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic</option>
+      </select>
+
+      <label class="xg-label" for="apiKey">API Key</label>
+      <div class="xg-key-row">
+        <input type="password" id="apiKey" class="xg-input" placeholder="sk-... or sk-ant-...">
+        <button id="toggleKey" class="xg-btn-icon" title="Show/hide key">&#x1F441;</button>
+      </div>
+
+      <label class="xg-label" for="model">Model</label>
+      <select id="model" class="xg-select">
+      </select>
+    </section>
+
+    <section class="xg-section">
+      <h2>Style & Personality</h2>
+
+      <label class="xg-label" for="styleDescription">Style Description</label>
+      <textarea id="styleDescription" class="xg-textarea" rows="3"
+        placeholder="e.g., Casual, uses dry humor, keeps it short, occasionally sarcastic"></textarea>
+      <button id="analyzeStyle" class="xg-btn xg-btn-secondary">Analyze My Style from X</button>
+      <p id="analyzeStatus" class="xg-help-text"></p>
+
+      <label class="xg-label" for="customSystemPrompt">Custom System Prompt <span class="xg-optional">(optional)</span></label>
+      <textarea id="customSystemPrompt" class="xg-textarea" rows="4"
+        placeholder="Override the default system prompt. Leave blank to use the built-in prompt."></textarea>
+    </section>
+
+    <section class="xg-section">
+      <h2>Usage Limits</h2>
+
+      <label class="xg-label" for="dailyLimit">Daily Limit</label>
+      <input type="number" id="dailyLimit" class="xg-input xg-input-small" min="1" max="999" value="10">
+
+      <div class="xg-usage-display">
+        <span>Today's usage:</span>
+        <span id="usageCount" class="xg-usage-count">0 / 10</span>
+      </div>
+    </section>
+
+    <div class="xg-actions">
+      <button id="saveBtn" class="xg-btn xg-btn-primary">Save Settings</button>
+      <span id="saveStatus" class="xg-save-status"></span>
+    </div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>
