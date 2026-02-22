@@ -2,36 +2,27 @@
 
 ## Project Overview
 
-<!-- Describe your project here -->
-This is a [PROJECT_TYPE] project that [BRIEF_DESCRIPTION].
+This is a Chrome Extension (MV3) that injects a ghost button on every X/Twitter post. Clicking it generates 3 AI-powered reply variants (Bold, Smart, Witty) via OpenAI or Anthropic APIs.
 
 ## Tech Stack
 
-- **Language**: [e.g., TypeScript, Python, Go]
-- **Framework**: [e.g., React, FastAPI, Express]
-- **Database**: [e.g., PostgreSQL, MongoDB]
-- **Testing**: [e.g., Jest, Pytest, Go test]
+- **Language**: Vanilla JavaScript (ES modules in service worker, IIFE in content scripts)
+- **Platform**: Chrome Extension (Manifest V3)
+- **No build step** — load unpacked in Chrome, zero build friction
 
 ## Development Commands
 
 ```bash
-# Install dependencies
-[npm install | pip install -r requirements.txt | go mod download]
+# No install/build needed — load unpacked at chrome://extensions
 
-# Run development server
-[npm run dev | python main.py | go run .]
+# Verify JSON is valid
+python3 -m json.tool manifest.json > /dev/null
 
-# Run tests
-[npm test | pytest | go test ./...]
-
-# Build for production
-[npm run build | python -m build | go build]
-
-# Lint/Format
-[npm run lint | ruff check . | golangci-lint run]
-
-# Type check
-[npm run typecheck | mypy . | go vet ./...]
+# Check JS syntax
+node --check background.js
+node --check content/content.js
+node --check content/popup.js
+node --check settings/settings.js
 ```
 
 ## Code Style & Conventions
@@ -45,69 +36,71 @@ This is a [PROJECT_TYPE] project that [BRIEF_DESCRIPTION].
 
 ### File Organization
 
-<!-- Describe your project structure -->
 ```
-src/
-  components/    # UI components
-  services/      # Business logic
-  utils/         # Helper functions
-  types/         # Type definitions
-tests/
-  unit/          # Unit tests
-  integration/   # Integration tests
+x-ghost/
+├── manifest.json              # MV3 manifest
+├── background.js              # Service worker — LLM API calls, message routing
+├── content/
+│   ├── content.js             # MutationObserver, ghost button injection, reply posting
+│   ├── content.css            # Ghost button + inline popup styles (dark/light)
+│   └── popup.js               # Inline popup rendering (variants, edit, post)
+├── settings/
+│   ├── settings.html          # Settings page
+│   ├── settings.js            # Settings logic + style analysis trigger
+│   └── settings.css           # Settings styles
+├── lib/
+│   ├── api.js                 # LLM API wrapper (OpenAI + Anthropic)
+│   └── prompts.js             # Prompt templates
+└── icons/
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
 ```
 
 ### Naming Conventions
 
-- Files: `kebab-case.ts` or `snake_case.py`
-- Components: `PascalCase`
-- Functions: `camelCase` or `snake_case`
+- Files: `camelCase.js`
+- CSS classes: `xg-` prefix (e.g., `xg-ghost-btn`, `xg-popup`)
 - Constants: `SCREAMING_SNAKE_CASE`
-
-## Testing Requirements
-
-- Write tests for new functionality
-- Ensure existing tests pass before committing
-- Use descriptive test names that explain the expected behavior
-- Mock external dependencies appropriately
-
-## Git Workflow
-
-- Use conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
-- Keep commits atomic and focused
-- Write clear commit messages explaining the "why"
-
-## Common Mistakes to Avoid
-
-<!-- Add patterns that Claude should avoid - this is your "institutional memory" -->
-<!-- Example entries below - customize for your project -->
-
-- YOU MUST run tests before creating a PR
-- NEVER commit `.env` files or secrets
-- NEVER hardcode secrets, API keys, passwords, or tokens in code - use environment variables instead
-- ALWAYS check for accidental secrets before committing (look for hardcoded strings that look like keys/tokens)
-- ALWAYS use the existing logger instead of console.log
-- DO NOT add new dependencies without discussing first
+- Functions: `camelCase`
 
 ## Architecture Notes
 
-<!-- Document key architectural decisions -->
-<!-- Example: -->
-<!-- - We use repository pattern for database access -->
-<!-- - API responses follow the format: { data, error, metadata } -->
-<!-- - All dates are stored and transmitted in UTC -->
+- **Content scripts** use IIFE + global namespace (`window.XGhostPopup`) — Chrome MV3 does not support ES modules in content scripts
+- **Service worker** (`background.js`) uses ES modules (`"type": "module"`)
+- **Message passing**: content scripts communicate with background via `chrome.runtime.sendMessage`
+- **Storage**: `chrome.storage.local` with keys `xg_settings` and `xg_usage`
+- **DOM selectors** for X/Twitter are centralized in `SELECTORS` constant in `content.js` for easy updates when X changes its DOM
 
-## Environment Setup
+### Key X/Twitter Selectors
 
-<!-- Document any required environment variables -->
-Required environment variables (see `.env.example`):
-- `DATABASE_URL`: Connection string for the database
-- `API_KEY`: External API authentication
+```javascript
+const SELECTORS = {
+  tweet: 'article[data-testid="tweet"]',
+  actionBar: '[role="group"]',
+  tweetText: '[data-testid="tweetText"]',
+  userName: '[data-testid="User-Name"]',
+  replyBtn: '[data-testid="reply"]',
+  replyBox: '[data-testid="tweetTextarea_0"]',
+  postBtn: '[data-testid="tweetButtonInline"]'
+};
+```
+
+## Common Mistakes to Avoid
+
+- NEVER commit `.env` files or secrets
+- NEVER hardcode API keys in code — they are stored in `chrome.storage.local`
+- ALWAYS use `xg-` prefix for CSS classes to avoid conflicts with X's styles
+- ALWAYS use IIFE pattern in content scripts (not ES modules)
+- DO NOT add npm/build dependencies — this is a zero-build project
+- DO NOT use `document.execCommand` alternatives that break X's React-controlled inputs
+- ALWAYS test with both dark and light X themes
 
 ## Verification Steps
 
 IMPORTANT: Always verify your work using these methods:
-1. Run the test suite: `[test command]`
-2. Run type checking: `[typecheck command]`
-3. Run linting: `[lint command]`
-4. For UI changes, take a screenshot or use the browser to verify
+1. Check JS syntax: `node --check <file>`
+2. Validate manifest: `python3 -m json.tool manifest.json > /dev/null`
+3. Load unpacked at `chrome://extensions` and test on x.com
+4. Test ghost button injection on timeline, profile, search, and thread views
+5. Test dark/light theme switching

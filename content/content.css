@@ -1,0 +1,298 @@
+/* === X Ghost — Content Styles === */
+
+/* --- Theme variables --- */
+.xg-light {
+  --xg-bg: #ffffff;
+  --xg-bg-secondary: #f7f9f9;
+  --xg-text: #0f1419;
+  --xg-text-secondary: #536471;
+  --xg-border: #eff3f4;
+  --xg-accent: #7c3aed;
+  --xg-accent-hover: #6d28d9;
+  --xg-accent-light: rgba(124, 58, 237, 0.1);
+  --xg-error: #f4212e;
+  --xg-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.xg-dark {
+  --xg-bg: #16181c;
+  --xg-bg-secondary: #1d1f23;
+  --xg-text: #e7e9ea;
+  --xg-text-secondary: #71767b;
+  --xg-border: #2f3336;
+  --xg-accent: #a78bfa;
+  --xg-accent-hover: #8b5cf6;
+  --xg-accent-light: rgba(167, 139, 250, 0.12);
+  --xg-error: #f4212e;
+  --xg-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Ghost button --- */
+.xg-ghost-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34.75px;
+  height: 34.75px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.xg-ghost-btn:hover {
+  background-color: var(--xg-accent-light, rgba(124, 58, 237, 0.1));
+}
+
+.xg-ghost-btn:active {
+  transform: scale(0.92);
+}
+
+/* --- Popup overlay --- */
+.xg-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99998;
+  background: transparent;
+}
+
+/* --- Popup container --- */
+.xg-popup {
+  position: fixed;
+  z-index: 99999;
+  width: 340px;
+  max-height: 520px;
+  overflow-y: auto;
+  border-radius: 16px;
+  background: var(--xg-bg);
+  border: 1px solid var(--xg-border);
+  box-shadow: var(--xg-shadow);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--xg-text);
+  animation: xg-fade-in 0.15s ease-out;
+  padding: 16px;
+}
+
+@keyframes xg-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Popup header --- */
+.xg-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.xg-popup-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.xg-popup-close {
+  background: none;
+  border: none;
+  color: var(--xg-text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.15s;
+}
+
+.xg-popup-close:hover {
+  background-color: var(--xg-accent-light);
+  color: var(--xg-text);
+}
+
+/* --- Loading skeleton --- */
+.xg-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.xg-skeleton-card {
+  height: 64px;
+  border-radius: 12px;
+  background: var(--xg-bg-secondary);
+  position: relative;
+  overflow: hidden;
+}
+
+.xg-skeleton-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--xg-accent-light) 50%,
+    transparent 100%
+  );
+  animation: xg-shimmer 1.5s infinite;
+}
+
+@keyframes xg-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* --- Variant cards --- */
+.xg-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.xg-variant-card {
+  padding: 10px 12px;
+  border: 2px solid var(--xg-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+  background: var(--xg-bg);
+}
+
+.xg-variant-card:hover {
+  border-color: var(--xg-accent);
+  background: var(--xg-accent-light);
+}
+
+.xg-variant-card.xg-selected {
+  border-color: var(--xg-accent);
+  background: var(--xg-accent-light);
+}
+
+.xg-variant-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--xg-accent);
+  margin-bottom: 4px;
+}
+
+.xg-variant-text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--xg-text);
+}
+
+.xg-variant-hint {
+  font-size: 11px;
+  color: var(--xg-text-secondary);
+  margin-top: 2px;
+}
+
+/* --- Edit area --- */
+.xg-edit-area {
+  margin-top: 12px;
+}
+
+.xg-edit-textarea {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 12px;
+  border: 2px solid var(--xg-border);
+  border-radius: 12px;
+  background: var(--xg-bg-secondary);
+  color: var(--xg-text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.xg-edit-textarea:focus {
+  border-color: var(--xg-accent);
+}
+
+.xg-char-count {
+  font-size: 12px;
+  color: var(--xg-text-secondary);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.xg-char-count.xg-over-limit {
+  color: var(--xg-error);
+  font-weight: 600;
+}
+
+/* --- Post button --- */
+.xg-post-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--xg-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s, opacity 0.15s;
+}
+
+.xg-post-btn:hover {
+  background: var(--xg-accent-hover);
+}
+
+.xg-post-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Error state --- */
+.xg-error-msg {
+  padding: 12px;
+  text-align: center;
+  color: var(--xg-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.xg-error-msg a {
+  color: var(--xg-accent);
+  text-decoration: none;
+}
+
+.xg-error-msg a:hover {
+  text-decoration: underline;
+}
+
+/* --- Status message --- */
+.xg-status {
+  font-size: 12px;
+  text-align: center;
+  color: var(--xg-text-secondary);
+  margin-top: 8px;
+}
+
+.xg-status.xg-status-error {
+  color: var(--xg-error);
+}
+
+.xg-status.xg-status-success {
+  color: #00ba7c;
+}
